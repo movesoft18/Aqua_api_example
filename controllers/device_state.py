@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from app_data.devices_data import get_device_data, set_device_data
+from app_data.devices_data import get_device_data, set_device_data, serialize_all
 
 class DeviceState(Resource):
     def get(self):
@@ -8,10 +8,18 @@ class DeviceState(Resource):
             'deviceId',
             type=int,
             location='args',
-            required=True,
+            required=False,
             )
         args = parser.parse_args()
+        if args['deviceId'] is None:
+            return {
+                'error': 0,
+                'message': 'Ok',
+                'data': serialize_all()                
+            }
+        
         state = get_device_data(args['deviceId'])
+            
         if state is None:
             return {
                 'error': 5,

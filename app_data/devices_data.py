@@ -16,6 +16,9 @@ devices_data = {
     },    
 }
 
+def serialize_all():
+  return [devices_data[key] for key in devices_data]
+
 def get_device_data(id: int):
     return devices_data.get(id)
 
