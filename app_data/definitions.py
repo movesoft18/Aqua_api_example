@@ -1,4 +1,7 @@
 from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase
+
+class Base(DeclarativeBase): pass
 
 server_port = 5001
 mysql_user = 'user'
