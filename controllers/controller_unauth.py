@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 class ControllerUnauth(Resource):
     def __init__(self, **kwargs):
         if 'connection' in kwargs:
-            self._connection = kwargs['connecton']
+            self._connection = kwargs['connection']
             
     def make_response_str(
         self,
