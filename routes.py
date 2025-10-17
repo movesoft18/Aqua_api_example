@@ -11,4 +11,4 @@ def InitRoutes(api):
     api.add_resource(SayHello, '/api/v1/hello')
     api.add_resource(ServerVersion, '/api/v1/version')
     api.add_resource(DeviceState, '/api/v1/status',
-                     resource_class_kwarg=additional_params)
+                     resource_class_kwargs=additional_params)

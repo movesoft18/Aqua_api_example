@@ -1,11 +1,9 @@
-from flask_restful import Resource
+from controllers.controller_unauth import ControllerUnauth
+from classes.errors import ERROR
 
-class ServerVersion(Resource):
+class ServerVersion(ControllerUnauth):
     def get(self):
-        return {
-            'error': 0,
-            'message': 'Ok',
-            'data': { 
-                'version' : '1.0.0'
-            },
-        }, 200
+        return self.make_response_str(
+            ERROR.OK,
+            {'version' : '1.0.1'}
+            ), 200
