@@ -1,7 +1,7 @@
 from models.User import User
 from models.Role import Role
 from models.State import AquaState
-from models.Cadidate import Candidate
+from models.Candidate import Candidate
 from app_data.definitions import mysql_connection, Base
 from sqlalchemy.orm import Session
 
