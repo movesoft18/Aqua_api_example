@@ -4,11 +4,12 @@ from controllers.controller_unauth import ControllerUnauth
 from sqlalchemy.orm import Session
 from hashlib import sha256
 from models.User import User
+from flask import current_app, request
 
 class ControllerBase(ControllerUnauth):
     parser = reqparse.RequestParser(bundle_errors=True)
-    parser.add_argument('authorization', required=True,
-                        type=str, location='header', 
+    parser.add_argument('authorization', required=False,
+                        type=str, location='headers', 
                         help='Missing authorization token')
     
     def __init__(self, **kwargs):

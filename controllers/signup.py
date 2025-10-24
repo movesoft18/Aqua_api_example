@@ -24,19 +24,19 @@ class SignUp(ControllerUnauth):
                                 location='args')
             args = parser.parse_args()
             with Session(autoflush=False, bind=self._connection) as db:
-                try:
-                    candidate = db.query(Candidate)\
-                        .filter(
-                            Candidate.confirm_code_expired < datetime.now()
-                        )
-                    candidate.delete(synchronize_session='fetch')
-                    db.commit()
-                except:
-                    pass 
+                # try:
+                #     candidate = db.query(Candidate)\
+                #         .filter(
+                #             Candidate.confirm_code_expired < datetime.now()
+                #         )
+                #     candidate.delete(synchronize_session='fetch')
+                #     db.commit()
+                # except:
+                #     pass 
                     candidate = db.query(Candidate)\
                         .filter(
                             Candidate.phone == args['phone'],
-                            Candidate.confirm_code_expired ==
+                            Candidate.confirm_code_hash ==
                                 sha256(args['code'].encode('utf-8')).hexdigest()
                         ).first()
                     if candidate == None:
@@ -122,6 +122,7 @@ class SignUp(ControllerUnauth):
         
         
     def send_confirm_code(self, service, confirm_code):
+        return
         sender = EmailCodeSender(
             'smtp.mail.ru',
             'aquaservice@mail.ru',
@@ -129,6 +130,7 @@ class SignUp(ControllerUnauth):
             'my_super_secret_password',
         )
         res = sender.send(
+            service,
             'Подтверждение регистрации на AquaService',
             f'Код подтверждения регистрации: {confirm_code}'
         )
