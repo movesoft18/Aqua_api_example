@@ -18,7 +18,9 @@ class ControllerBase(ControllerUnauth):
             args = ControllerBase.parser.parse_args()
             self.abort_if_authorization_error(args['authorization'])
         except Exception as e:
-            # TODO: Add logging
+            current_app.logger.warning(
+                f'Попытка несанкционированного доступа с адреса {request.remote_addr}, маршрут {request.url}. Ответ - код ошибки {ERROR.UNAUTHORIZED.value}, Сообщение {APIError.err(ERROR.UNAUTHORIZED.value)}'
+            )
             abort(
                 401,
                 error = ERROR.UNAUTHORIZED.value,
