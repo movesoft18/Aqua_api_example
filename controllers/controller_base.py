@@ -4,7 +4,7 @@ from controllers.controller_unauth import ControllerUnauth
 from sqlalchemy.orm import Session
 from hashlib import sha256
 from models.User import User
-from flask import current_app, request
+from flask import current_app, request, session
 
 class ControllerBase(ControllerUnauth):
     parser = reqparse.RequestParser(bundle_errors=True)
@@ -18,7 +18,9 @@ class ControllerBase(ControllerUnauth):
             args = ControllerBase.parser.parse_args()
             self.abort_if_authorization_error(args['authorization'])
         except Exception as e:
-            # TODO: Add logging
+            current_app.logger.warning(
+                f'Попытка несанкционированного доступа с адреса {request.remote_addr}, маршрут {request.url}. Ответ - код ошибки {ERROR.UNAUTHORIZED.value}, Сообщение {APIError.err(ERROR.UNAUTHORIZED.value)}'
+            )
             abort(
                 401,
                 error = ERROR.UNAUTHORIZED.value,
@@ -27,6 +29,8 @@ class ControllerBase(ControllerUnauth):
             )
     
     def abort_if_authorization_error(self, auth: str):
+        if ('user' in session) and self.is_valid_user(session['user']):
+            return
         if not auth:
             abort(
                 401,
@@ -60,4 +64,13 @@ class ControllerBase(ControllerUnauth):
                 return False
             self._user_id = user.id
             return True
-                
+    
+    def is_valid_user(self, user_id):
+        with Session(autoflush=False, bind=self._connection) as db:
+            user = db.query(User) \
+                .filter(User.id == user_id) \
+                .first()
+            if user == None:
+                return False
+            self._user_id = user.id
+            return True
